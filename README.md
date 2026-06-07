@@ -4,9 +4,10 @@
 - Node.js (CommonJS)
 - Express.js
 - MongoDB (Mongoose)
-- JWT (jsonwebtoken) *(dependency present; auth routes not included in this repo yet)*
-- cookie-parser
+- Authentication helpers: jsonwebtoken, bcryptjs
+- cookie-parser (JWT stored in cookie)
 - dotenv
+
 
 ## Prerequisites
 - Node.js installed
@@ -17,7 +18,9 @@ Create a `.env` file in the project root:
 
 ```env
 MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
 ```
+
 
 ## Install
 ```bash
@@ -37,15 +40,46 @@ On startup, `server.js` calls the DB connector (`connectDb()`), which connects t
 ## Project Structure
 ```
 .
-├── server.js          # Starts the server (port 3000) and connects to MongoDB
+├── server.js            # Starts the server (port 3000) and connects to MongoDB
 ├── src/
-│   ├── app.js         # Express app setup (json + cookie-parser)
+│   ├── app.js           # Express app setup (json + cookie-parser + routes)
+│   ├── controller/
+│   │   └── auth.controller.js
+│   ├── models/
+│   │   └── user.model.js
+│   ├── routes/
+│   │   └── auth.route.js
 │   └── db/
-│       └── db.js     # Mongoose connection using MONGO_URI
+│       └── db.js       # Mongoose connection using MONGO_URI
 ├── package.json
-└── .env               # (create this)
+└── .env                 # (create this)
 ```
+
+
+## API
+### Register
+`POST /api/auth/register`
+
+Registers a new user.
+
+**Request body** (JSON):
+```json
+{
+  "username": "string",
+  "email": "string",
+  "password": "string",
+  "role": "user" // optional (default: user)
+}
+```
+
+On success, the server:
+- creates the user in MongoDB
+- hashes the password (bcryptjs)
+- signs a JWT using `JWT_SECRET`
+- stores the JWT in a cookie named `token`
 
 ## Notes
 - If `MONGO_URI` is missing or incorrect, DB connection will fail and an error will be logged.
+- Ensure `JWT_SECRET` exists in your `.env`.
+
 
