@@ -44,12 +44,16 @@ On startup, `server.js` calls the DB connector (`connectDb()`), which connects t
 ├── src/
 │   ├── app.js           # Express app setup (json + cookie-parser + routes)
 │   ├── controller/
-│   │   └── auth.controller.js
+│   │   ├── auth.controller.js
+│   │   └── music.controller.js
 │   ├── models/
-│   │   └── user.model.js
+│   │   ├── user.model.js
+│   │   └── music.model.js
 │   ├── routes/
-│   │   └── auth.route.js
+│   │   ├── auth.route.js
+│   │   └── music.route.js
 │   └── db/
+
 │       └── db.js       # Mongoose connection using MONGO_URI
 ├── package.json
 └── .env                 # (create this)
@@ -78,8 +82,15 @@ On success, the server:
 - signs a JWT using `JWT_SECRET`
 - stores the JWT in a cookie named `token`
 
+## API (Music) - WIP
+The music route/controller/model files exist, but the API endpoints are not implemented yet.
+
+- `POST`/`GET` endpoints for music are not defined in `src/routes/music.route.js` yet.
+- `createModel` in `src/controller/music.controller.js` is currently empty.
+
 ## Notes
 - If `MONGO_URI` is missing or incorrect, DB connection will fail and an error will be logged.
 - Ensure `JWT_SECRET` exists in your `.env`.
+
 
 

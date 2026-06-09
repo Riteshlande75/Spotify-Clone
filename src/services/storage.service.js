@@ -1,0 +1,19 @@
+const {ImageKit}= require("@imagekit/nodejs");
+
+
+const ImagekitClient = new ImageKit({
+
+    privateKey:process.env.IMAGE_KIT_PRIVATE_KEY,
+})
+
+async function uploadFile(file) {
+     
+    const result = await ImagekitClient.files.upload({
+        file,
+        fileName:"music_" + Date.now(),
+        folder:"yt-spotify clone/music"
+    })
+     
+    return result;
+}
+module.exports = {uploadFile}

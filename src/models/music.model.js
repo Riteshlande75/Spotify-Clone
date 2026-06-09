@@ -6,13 +6,13 @@ const musicSchema = new mongoose.Schema({
 
     uri:{
         type: String,
-        require: true,
+        required: true,
 
     },
 
     title:{
         type: String,
-        require: true,
+        required: true,
 
 
     },
