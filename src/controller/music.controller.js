@@ -4,24 +4,7 @@ const {uploadFile} = require("../services/storage.service");
 const albumModel = require("../models/album.model")
 
 async function createMusic(req , res) {
-    
-
-     const token = req.cookies.token;
-
-     if(!token){
-
-        return res.status(401).json({message:"Unauhtorized"})
-     }
- try {
-
- 
-   const decoded = jwt.verify(token,process.env.JWT_SECRET)
-
-   if (decoded.role !== "artist"){
-    return res.status(403).json({message: "you dont have access to create a music"})
-   }
-
-  
+      
 const { title } = req.body;
 const file = req.file;
 
@@ -35,7 +18,7 @@ const result = await uploadFile(file.buffer.toString('base64'))
 const music = await musicModel.create({
     uri: result.url,
     title,
-    artist : decoded.id,
+    artist : req.user.id,
 })
  
 
@@ -50,30 +33,10 @@ res.status(201).json({
 
 })
 
-} 
- catch(err){
-
-    console.log(err);
-
- return res.status(401).json({message:"Unauhtorized"})
- }
 }
 
 
 async function createAlbum(req, res) {
-    const token = req.cookies.token;
-
-    if (!token) {
-        return res.status(401).json({ message: "unauthorized" });
-    }
-
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-        if (decoded.role !== "artist") {
-            return res.status(403).json({ message: "you dont have access to create an album" });
-        }
-
         const { title, musicIds } = req.body;
 
         if (!title || !Array.isArray(musicIds)) {
@@ -82,7 +45,7 @@ async function createAlbum(req, res) {
 
         const album = await albumModel.create({
             title,
-            artist: decoded.id,
+            artist: req.user.id,
             music: musicIds,
         });
 
@@ -95,10 +58,7 @@ async function createAlbum(req, res) {
                 music: album.music,
             },
         });
-    } catch (err) {
-        console.log(err);
-        return res.status(401).json({ message: "Unauthorized" });
-    }
+   
 }
 
 module.exports = { createMusic, createAlbum };
